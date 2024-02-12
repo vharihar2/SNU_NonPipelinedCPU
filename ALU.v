@@ -21,7 +21,7 @@
 * Revision History:
 *            Date                       By                                Change Notes
 * ----------------------- ---------------------- ------------------------------------------
-*  7th October 2023       Devyam Seal            default values were changed to ‘zzz’
+*  7th October 2023       Devyam Seal            default values were changed to â€˜zzzâ€™
 *   
 *  8th October 2023       Aditi Sharma           default cases were added to case 
 *                                                statements                  
@@ -59,126 +59,131 @@ reg Carry, Zero, Parity, Sign;
 
 initial
 begin
-    Carry =0;
-    Zero = 0;
-    Parity = 0;
-    Sign = 0;
-    Out = 0;
+    Carry <=0;
+    Zero <= 0;
+    Parity <= 0;
+    Sign <= 0;
+    Out <= 0;
 end
 
 
-always @(opcode)
+always @(posedge clk)
 begin
     if(opcode[7:3] == 5'b00001)
         begin
-            inst = opcode[2:0];
+            inst <= opcode[2:0];
         end
         
     else if(opcode[7:6] == 2'b01)
         begin
-            inst = opcode[5:3]; 
+            inst <= opcode[5:3]; 
         end
         
     else
         begin
-            inst = 3'bzzz;
+            inst <= 3'bzzz;
         end
 
     
      if (opcode[7:3] == 5'b00001)
         begin
-            A = AC;
-            B = OD;
+            A <= AC;
+            B <= OD;
         end
         
      else if (opcode[7:5] == 3'b010)
         begin
-            A = RN;
-            B = AC;
+            A <= RN;
+            B <= AC;
         end
         
      else if (opcode[7:5] == 3'b011)
         begin
-            A = RN;
-            B = OD;
+            A <= RN;
+            B <= OD;
         end
         
      else
         begin
-            A = 8'b0;
-            B = 8'b0;
+            A <= 8'b0;
+            B <= 8'b0;
         end
 end
 
 always @(*)
 begin
 
+    $monitor("%t, ALU RN in = is %b" , $time, RN);
+    $monitor("%t, ALU OD in = is %b" , $time, OD);
+    $monitor("%t, ALU out = is %b" , $time, Out);
+    
+
     //Out = 1'b0;
-    Sign = 1'b0;
+    Sign <= 1'b0;
  
 
     case (inst)
         CM: 
             begin
-                Out = ~A;
-                Carry = 1'b0;
+                Out <= ~A;
+                Carry <= 1'b0;
             end
         AND:
             begin
-                Out = A & B;
-                Carry = 1'b0;
+                Out <= A & B;
+                Carry <= 1'b0;
             end
         OR: 
             begin
-                Out = A | B;
-                Carry = 1'b0;
+                Out <= A | B;
+                Carry <= 1'b0;
             end
         XOR:
             begin
-                Out = A ^ B;
-                Carry = 1'b0;
+                Out <= A ^ B;
+                Carry <= 1'b0;
             end
         ADD:
             begin
-                {Carry, Out} = A + B;
+                {Carry, Out} <= A + B;
             end
         SUB:
             begin
-                {Sign, Out} = A - B;
+                {Sign, Out} <= A - B;
             end
         CP:
             begin
                 if(B<A)
                     begin
-                        Carry = 1'b1;
-                        Sign = 1'b0;
+                        Carry <= 1'b1;
+                        Sign <= 1'b0;
                     end
                 else if(A==B)
                     begin
-                        Sign = 1'b1;
-                        Carry = 1'b0;
+                        Sign <= 1'b1;
+                        Carry <= 1'b0;
                     end
                 else
                     begin
-                        Sign = 1'b0;
-                        Carry = 1'b0;
+                        Sign <= 1'b0;
+                        Carry <= 1'b0;
                     end
             end
     endcase
 
     case (opcode[7:3])
-        5'b01111: Out = RN + AC;
+        5'b01111: Out <= RN + AC;
     endcase
 
     case (opcode)
-        8'h6: Out = AC << OD;
-        8'h7: Out = AC >> OD;
+        8'h6: Out <= AC << OD;
+        8'h7: Out <= AC >> OD;
     endcase
 
-    Parity = ^Out;
-    Zero = ~(|Out);
+    Parity <= ^Out;
+    Zero <= ~(|Out);
     
-    $monitor("%t, ALU in = is %b" , $time, RN);
+
 end
 
 assign Flag = {Carry, Zero, Sign, Parity};
