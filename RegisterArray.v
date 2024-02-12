@@ -64,17 +64,17 @@ reg [4:0] pair_sel;
 
 initial
     begin
-        ac = 0;
-        reg_sel = 3'bz;
-        pair_sel = 5'bz;
-        register[0]= 0;
-        register[1]= 0;
-        register[2]= 0;
-        register[3]= 0;
-        register[4]= 0;
-        register[5]= 0;
-        register[6]= 0;
-        register[7]= 0;
+        ac <= 0;
+        reg_sel <= 3'bz;
+        pair_sel <= 5'bz;
+        register[0]<= 0;
+        register[1]<= 0;
+        register[2]<= 0;
+        register[3]<= 0;
+        register[4]<= 0;
+        register[5]<= 0;
+        register[6]<= 0;
+        register[7]<= 0;
     end
     
 assign ac_ALU = ac;   
@@ -87,15 +87,15 @@ begin
     if(rst == 1'b1)
     begin
        
-        ac = 0;
-        register[0]= 0;
-        register[1]= 0;
-        register[2]= 0;
-        register[3]= 0;
-        register[4]= 0;
-        register[5]= 0;
-        register[6]= 0;
-        register[7]= 0;
+        ac <= 0;
+        register[0]<= 0;
+        register[1]<= 0;
+        register[2]<= 0;
+        register[3]<= 0;
+        register[4]<= 0;
+        register[5]<= 0;
+        register[6]<= 0;
+        register[7]<= 0;
         
     end    
  
@@ -113,43 +113,43 @@ ri = register[7];
 
     if (opcode[7:6] == 2'b11)
     begin
-        pair_sel = opcode[4:0];
+        pair_sel <= opcode[4:0];
     end
 
     else if(opcode[7:6] == 2'b10 || opcode[7:6] == 2'b01)
     begin
-        reg_sel = opcode[2:0];
+        reg_sel <= opcode[2:0];
     end   
     
     case(pair_sel)
-        00000: pair = {register[0], register[1]};
-        00001: pair = {register[0], register[2]};
-        00010: pair = {register[0], register[3]};
-        00011: pair = {register[0], register[4]};
-        00100: pair = {register[0], register[5]};
-        00101: pair = {register[0], register[6]};
-        00110: pair = {register[0], register[7]};
-        00111: pair = {register[1], register[2]};
-        01000: pair = {register[1], register[3]};
-        01001: pair = {register[1], register[4]};
-        01010: pair = {register[1], register[5]};
-        01011: pair = {register[1], register[6]};
-        01100: pair = {register[1], register[7]};
-        01101: pair = {register[2], register[3]};
-        01110: pair = {register[2], register[4]};
-        01111: pair = {register[2], register[5]};
-        10000: pair = {register[2], register[6]};
-        10001: pair = {register[2], register[7]};
-        10010: pair = {register[3], register[4]};
-        10011: pair = {register[3], register[5]};
-        10100: pair = {register[3], register[6]};
-        10101: pair = {register[3], register[7]};
-        10110: pair = {register[4], register[5]};
-        10111: pair = {register[4], register[6]};
-        11000: pair = {register[4], register[7]};
-        11001: pair = {register[5], register[6]};
-        11010: pair = {register[5], register[7]};
-        11011: pair = {register[6], register[7]};
+        00000: pair <= {register[0], register[1]};
+        00001: pair <= {register[0], register[2]};
+        00010: pair <= {register[0], register[3]};
+        00011: pair <= {register[0], register[4]};
+        00100: pair <= {register[0], register[5]};
+        00101: pair <= {register[0], register[6]};
+        00110: pair <= {register[0], register[7]};
+        00111: pair <= {register[1], register[2]};
+        01000: pair <= {register[1], register[3]};
+        01001: pair <= {register[1], register[4]};
+        01010: pair <= {register[1], register[5]};
+        01011: pair <= {register[1], register[6]};
+        01100: pair <= {register[1], register[7]};
+        01101: pair <= {register[2], register[3]};
+        01110: pair <= {register[2], register[4]};
+        01111: pair <= {register[2], register[5]};
+        10000: pair <= {register[2], register[6]};
+        10001: pair <= {register[2], register[7]};
+        10010: pair <= {register[3], register[4]};
+        10011: pair <= {register[3], register[5]};
+        10100: pair <= {register[3], register[6]};
+        10101: pair <= {register[3], register[7]};
+        10110: pair <= {register[4], register[5]};
+        10111: pair <= {register[4], register[6]};
+        11000: pair <= {register[4], register[7]};
+        11001: pair <= {register[5], register[6]};
+        11010: pair <= {register[5], register[7]};
+        11011: pair <= {register[6], register[7]};
     endcase
     
 end    
@@ -158,17 +158,19 @@ end
     
 always @(posedge clk)
 begin
+
+    $monitor("%t, accumulator = %b" , $time, ac);
     if(wa_rn)
     begin
-        ac = 0;
-        register[0]= 0;
-        register[1]= 0;
-        register[2]= 0;
-        register[3]= 0;
-        register[4]= 0;
-        register[5]= 0;
-        register[6]= 0;
-        register[7]= 0;
+        ac <= 0;
+        register[0]<= 0;
+        register[1]<= 0;
+        register[2]<= 0;
+        register[3]<= 0;
+        register[4]<= 0;
+        register[5]<= 0;
+        register[6]<= 0;
+        register[7]<= 0;
     end
     
  /*   if (r_a)
@@ -187,11 +189,11 @@ begin
     */
     if (w_a)
     begin
-        ac = data_in;
+        ac <= data_in;
     end
     if (w_rn)
     begin
-        register[reg_sel] = data_in;
+        register[reg_sel] <= data_in;
     end
 end   
 
