@@ -43,7 +43,7 @@ reg [7:0] opr;
 initial
 begin
    // out_or = 8'bz;
-    opr = 8'bz;
+    opr <= 8'bz;
 end
 
 assign alu_out = opr;
@@ -56,7 +56,7 @@ begin
     
     if(rst == 1'b1)
         begin
-            opr = 0;
+            opr <= 0;
         end    
 
     if(w_or == 1'b1)
