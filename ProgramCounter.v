@@ -42,7 +42,7 @@ reg [15:0] pc;
 
 initial
 begin
-    pc = 16'b0;
+    pc <= 16'b0;
     //ar_out = 16'b0;
    // out = 16'b0;
 end       
@@ -59,22 +59,22 @@ begin
     
     if(rst == 1'b1)
     begin
-        pc = 0;
+        pc <= 0;
     end    
     
     if(i_pc == 1'b1)
     begin
-        pc = pc + 1'b1;
+        pc <= pc + 1'b1;
     end
     
     if(i2_pc == 1'b1)
     begin
-        pc = pc + 2;
+        pc <= pc + 2;
     end
     
     if(w_pc == 1'b1)
     begin
-        pc = address;
+        pc <= address;
     end            
     
 /*    if(r_pc == 1'b1)
