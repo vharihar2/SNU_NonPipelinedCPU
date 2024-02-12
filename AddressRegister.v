@@ -41,18 +41,18 @@ module AddressRegister( input clk,
 reg [15:0] ADR;                        
 initial
 begin
-ADR = 16'b0;
+ADR <= 16'b0;
 //AdReg_out = 16'b0; // Initializing
 end
 
 assign AdReg_out = ADR; 
 
-always @(posedge clk)
+always @(*)
 begin
 
     if(rst == 1'b1)
     begin
-        ADR = 0;
+        ADR <= 0;
     end    
     
     $monitor("%t, AR = %b" , $time, ADR);
@@ -60,11 +60,11 @@ begin
     
     if(P_ar == 1'b1) // Enabling PC input
     begin
-        ADR = PC_in; 
+        ADR <= PC_in; 
     end
     else if(A_ar == 1'b1) // Enabling Address Bus input
     begin
-        ADR = AB_in;
+        ADR <= AB_in;
     end
 end               
 endmodule
