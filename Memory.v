@@ -53,12 +53,12 @@ initial
 begin
     for(i = 0 ; i<= 59999; i = i+1)
     begin
-        mem[i] = 8'b0;
+        mem[i] <= 8'b0;
     end
     
     for( i = 0; i<=3999; i = i+1)
     begin
-        stack_mem[i] = 16'b0;
+        stack_mem[i] <= 16'b0;
     end    
 
  //   out_data = 8'b0;
@@ -72,12 +72,14 @@ assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
 always @(*)
 begin
     
-    mem[TestAd] = TestDat;
+    mem[TestAd] <= TestDat;
     $monitor("at time, %t, m0 = %b", $time, mem[0]);
     $monitor("at time, %t, m1 = %b", $time, mem[16'b0000000000000001]);
     $monitor("at time, %t, m2 = %b", $time, mem[16'b0000000000000010]);
     $monitor("at time, %t, m3 = %b", $time, mem[16'b0000000000000011]);
     $monitor("at time, %t, m4 = %b", $time, mem[16'b0000000000000100]);
+    $monitor("at time, %t, m4 = %b", $time, mem[16'b0000000010000000]);
+    $monitor("at time, %t, m4 = %b", $time, mem[16'b1000000000000000]);
     /*
     
     if(TestDat != 8'bz)
@@ -96,7 +98,7 @@ begin
     
     if(wr == 1)
     begin
-        mem[areg] = data ;
+        mem[areg] <= data ;
     end 
     
     /*if(rd_ab == 1)
@@ -106,7 +108,7 @@ begin
     
     if(wr_s == 1)
     begin
-        stack_mem[sp] = address;
+        stack_mem[sp] <= address;
     end 
     
   /*  if(rd_s == 1)
