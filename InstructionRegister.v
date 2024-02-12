@@ -46,7 +46,7 @@ assign out_ir = ir;
 initial
 begin
     //skip = 1'b1;
-    ir = 8'bz;
+    ir <= 8'bz;
    // out_ir = 8'bz;
 end
 
@@ -55,7 +55,7 @@ begin
 
     if(rst == 1'b1)
     begin
-        ir = 8'b0;
+        ir <= 8'b0;
     end    
 
     /*case(skip) // trying to make IR start one clock cycle late
@@ -74,7 +74,7 @@ begin
     
     if(w_ir == 1'b1)
     begin 
-        ir = data;
+        ir <= data;
     end
     
     $monitor("%t, IR = %b", $time, ir);
