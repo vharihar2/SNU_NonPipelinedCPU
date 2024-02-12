@@ -46,17 +46,17 @@ begin
 
     if(rst == 1'b1)
     begin
-        SP = 0;
+        SP <= 0;
     end    
         
     if (I_sp == 1'b1) // Increment control signal
     begin
-        SP = SP+1;
+        SP <= SP+1;
     end
     
     else if(D_sp == 1'b1) // Decrement control signal
     begin
-        SP = SP-1;
+        SP <= SP-1;
     end
     
  //   Mem_out = SP;  // Sending Stack Pointer value to memory
