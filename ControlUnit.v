@@ -97,9 +97,9 @@ end
 initial
 begin
     //stage = 2'b00;
-    next <= 2'b00;
+    next = 2'b00;
         //cb = 32'b00000000000000000000000;
-    cb <= 24'b000000000000000000000000;
+    cb = 24'b000000000000000000000000;
 end
 
 
@@ -152,13 +152,13 @@ end
 
 always @(posedge clk)
   begin 
-    stage <= next;
+    stage = next;
     
     if(rst == 1'b1)
     begin
-        cb <= 0;
-        E <= 0;
-        IF <= 0;
+        cb = 0;
+        E = 0;
+        IF = 0;
     end 
   end  
   
@@ -175,30 +175,30 @@ begin
      case (stage)
      s0: 
         begin
-            IF[1] <= 1'b1;
-            E[1] <= 1'b0;
+            IF[1] = 1'b1;
+            E[1] = 1'b0;
            // cb = 24'b100000011000100000000000;
-           cb <= setBits(11,15,16,23);
+           cb = setBits(11,15,16,23);
                  
            /*if(IF[0] == 1)
               next = 2'b01;
            else
               next = 2'b10; */
-           next <= s05;   
+           next = s05;   
         end 
         
      s05: 
          begin 
-            next <= s052;
-            cb <= 0;
+            next = s052;
+            cb = 0;
          end        
             
      s052:
           begin
                  if(IF[0] == 1)
-                     next <= s1;
+                     next = s1;
                  else
-                     next <= s2;
+                     next = s2;
           end           
                          
      s1: 
@@ -208,48 +208,48 @@ begin
                 if(opcode[2:0] == 3'b001 && flags[3] == 1'b1 )
                 begin
                     //cb = 24'b000000000100100000000000;
-                    cb <= setBits(11,14,14,14); 
-                    next <= 2'b00; 
+                    cb = setBits(11,14,14,14); 
+                    next = 2'b00; 
                 end    
                 else if(opcode[2:0] == 3'b010 && flags[2] == 1'b1 )
                 begin
-                    cb <= setBits(11,14,14,14);  
-                    next <= 2'b00;  
+                    cb = setBits(11,14,14,14);  
+                    next = 2'b00;  
                 end
                 else if(opcode[2:0] == 3'b011 && flags[1] == 1'b1 )
                 begin
-                    cb <= setBits(11,14,14,14); 
-                    next <= 2'b00; 
+                    cb = setBits(11,14,14,14); 
+                    next = 2'b00; 
                 end
                 else if(opcode[2:0] == 3'b100 && flags[3] == 1'b0 )
                 begin
-                    cb <= setBits(11,14,14,14); 
-                    next <= 2'b00; 
+                    cb = setBits(11,14,14,14); 
+                    next = 2'b00; 
                 end
                 else if(opcode[2:0] == 3'b101 && flags[2] == 1'b0 )
                 begin
-                    cb <= setBits(11,14,14,14); 
-                    next <= 2'b00; 
+                    cb = setBits(11,14,14,14); 
+                    next = 2'b00; 
                 end
                 else if(opcode[2:0] == 3'b110 && flags[3] == 1'b0 )
                 begin
-                    cb <=  setBits(11,14,14,14); 
-                    next <= 2'b00; 
+                    cb =  setBits(11,14,14,14); 
+                    next = 2'b00; 
                 end
                 
                 else 
                 begin
                     //cb = 24'b000000000100100000000100;
-                      cb <= setBits(2,11,14,14); // if condition satisfied, ISP with I2PC
-                    next <= s2;
+                      cb = setBits(2,12,14,14); // if condition satisfied, ISP with I2PC
+                    next = s2;
                 end    
           end                            
                     
           else 
           begin
              //cb = 24'b100000101000100000000000; // Normal operand fetch,
-             cb <= setBits(11,15,17,23);
-             next <= s2;
+             cb = setBits(11,15,17,23);
+             next = s2;
           end           
         end
      s2: 
@@ -270,8 +270,8 @@ begin
                 end
             else   */  
     
-            E[1] <= 1'b1;
-            IF[1] <= 1'b0;
+            E[1] = 1'b1;
+            IF[1] = 1'b0;
         
             casex(opcode)
                // 8'b11xxxxxx : cb <= {15'b0, r_rn, w_rn, r_rp, 6'b0}  ;
@@ -321,12 +321,12 @@ begin
           
            if(E[0] == 1'b1)
            begin
-               next <= s3;
+               next = s3;
            end
            
            else
            begin 
-               next <= 2'b00;
+               next = 2'b00;
            end  
            
         end     
@@ -355,7 +355,7 @@ begin
               
             endcase
             
-            next <= 2'b00;
+            next = 2'b00;
             
        end   
        
