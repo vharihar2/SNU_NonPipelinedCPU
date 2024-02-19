@@ -1,0 +1,1 @@
+This 8-bit Microprocessor was made as part of our BTech Major Project in Shiv Nadar Institute of Eminence, under the guidance and supervision of Dr. Venkatnarayan Hariharan. All the required documents have been uploaded in the documents folder and any further documentation will be uploaded in the same folder. 
