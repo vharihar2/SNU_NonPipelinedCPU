@@ -53,12 +53,12 @@ initial
 begin
     for(i = 0 ; i<= 59999; i = i+1)
     begin
-        mem[i] = 8'b0;
+      mem[i] <= 8'b0;
     end
     
     for( i = 0; i<=3999; i = i+1)
     begin
-        stack_mem[i] = 16'b0;
+      stack_mem[i] <= 16'b0;
     end    
 
  //   out_data = 8'b0;
