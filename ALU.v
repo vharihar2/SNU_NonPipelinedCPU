@@ -34,30 +34,30 @@
 module ALU(
     input clk,
     //input rst,
-    output reg [7:0] Out,
-    output [3:0] Flag,
-    input [7:0] RN,
-    input [7:0] OD,
-    input [7:0] AC,
-    input [7:0] opcode
+    output reg [7:0] Out, //ALU output
+    output [3:0] Flag, // Flag register
+    input [7:0] RN, // Register Number
+    input [7:0] OD, // Operand
+    input [7:0] AC, // Accumulator
+    input [7:0] opcode // opcode
 );
 
-reg [7:0] A, B;
-reg [2:0] inst;  
+    reg [7:0] A, B; // Variables to assign RN/OD/AC
+    reg [2:0] inst; // Instruction  
         
         
 
-parameter [2:0] CP = 3'b000;
-parameter [2:0] AND = 3'b001;
-parameter [2:0] OR = 3'b010;
-parameter [2:0] XOR = 3'b011;
-parameter [2:0] CM = 3'b100;
-parameter [2:0] ADD = 3'b101;
-parameter [2:0] SUB = 3'b110;
+    parameter [2:0] CP = 3'b000; // Compare based on OPCODE
+    parameter [2:0] AND = 3'b001; // AND based on OPCODE
+    parameter [2:0] OR = 3'b010; // OR based on OPCODE
+    parameter [2:0] XOR = 3'b011; // XOR based on OPCODE
+    parameter [2:0] CM = 3'b100; // Complement based on OPCODE
+    parameter [2:0] ADD = 3'b101; // ADD based on OPCODE
+    parameter [2:0] SUB = 3'b110; // SUB based on OPCODE
 
-reg Carry, Zero, Parity, Sign;
+reg Carry, Zero, Parity, Sign; // Flag bits
 
-initial
+initial  // Initialising Flag bits
 begin
     Carry <=0;
     Zero <= 0;
@@ -68,7 +68,7 @@ end
 
 
 always @(posedge clk)
-begin
+    begin                            // Assigning opcode bits needed to decode instruction based on the type of instruction (One Register/Two Register/ Zero Register)
     if(opcode[7:3] == 5'b00001)
         begin
             inst <= opcode[2:0];
@@ -85,7 +85,7 @@ begin
         end
 
     
-     if (opcode[7:3] == 5'b00001)
+        if (opcode[7:3] == 5'b00001)  // Assigning variables to be used by ALU based on instruction
         begin
             A <= AC;
             B <= OD;
@@ -118,11 +118,10 @@ begin
     $monitor("%t, ALU out = is %b" , $time, Out);
     
 
-    //Out = 1'b0;
     Sign <= 1'b0;
  
 
-    case (inst)
+    case (inst)  // Defining Instructions
         CM: 
             begin
                 Out <= ~A;
@@ -171,21 +170,21 @@ begin
             end
     endcase
 
-    case (opcode[7:3])
+    case (opcode[7:3])  // Defining ADIR
         5'b01111: Out <= RN + AC;
     endcase
 
-    case (opcode)
+    case (opcode)              // Defining Rotate instructions
         8'h6: Out <= AC << OD;
         8'h7: Out <= AC >> OD;
     endcase
 
-    Parity <= ^Out;
-    Zero <= ~(|Out);
+    Parity <= ^Out;  // Defining parity
+    Zero <= ~(|Out); // Defining Zero
     
 
 end
 
-assign Flag = {Carry, Zero, Sign, Parity};
+    assign Flag = {Carry, Zero, Sign, Parity};  // Assigning Flag bits to Flag Register
 
 endmodule
