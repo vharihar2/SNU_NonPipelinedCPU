@@ -40,7 +40,7 @@ module ControlUnit(rd, wr, rd_ab, wr_s, rd_s,r_or, w_or,
                    r_rp, w_a, wa_rn, r_sp, i_sp, d_sp, cl_fr, E, IF, clk, opcode, rst, flags);
 
 
-function [23:0] setBits;
+  function [23:0] setBits;    // Creating a function to set control bits without using Magic numbers
     input integer a, b, c, d; 
         begin 
             setBits = 24'b0;
@@ -56,31 +56,28 @@ endfunction
 input clk;
 input [3:0] flags;
 input [7:0] opcode;
-output reg rd, wr, rd_ab, wr_s, rd_s; // memory
-output reg r_or, w_or; // operand register
-output reg w_ir; // instruction register
-output reg i_pc, i2_pc, w_pc, r_pc; // program counter
-output reg p_ar, a_ar; //address register
-output reg r_a, w_a, wa_rn;//register array
-//output reg [2:0] r_rn, w_rn;
-//output reg [4:0] r_rp;
-output reg r_rn, w_rn;
-output reg r_rp;
-output reg r_sp, i_sp, d_sp;//stack pointer
-output reg [1:0] E, IF;//control unit
-output reg cl_fr;
-input rst;
+output reg rd, wr, rd_ab, wr_s, rd_s; // memory control signals
+output reg r_or, w_or; // operand register control signals
+output reg w_ir; // instruction register control signals
+output reg i_pc, i2_pc, w_pc, r_pc; // program counter control signals
+output reg p_ar, a_ar; //address register control signals
+output reg r_a, w_a, wa_rn;//register array control signals
+output reg r_rn, w_rn; // Register array control signals
+output reg r_rp; // Special control signal to read and concatenate register pair values
+output reg r_sp, i_sp, d_sp;//stack pointer control signals
+output reg [1:0] E, IF; //control unit control signals
+output reg cl_fr; // Clear flag register
+input rst; // For hardware reset
 
-reg [2:0] stage, next;
-//reg [31:0] cb, cbt;
-reg [23:0] cb;
+reg [2:0] stage, next; // Registers used in the state machine
+reg [23:0] cb; // To store the control bits
 
-parameter [2:0] s0=3'b000;
-parameter [2:0] s05=3'b001;
-parameter [2:0] s052=3'b010;
-parameter [2:0] s1=3'b011;
-parameter [2:0] s2=3'b100;
-parameter [2:0] s3=3'b101;
+parameter [2:0] s0=3'b000; // IF state
+parameter [2:0] s05=3'b001; // Operand Fetch
+parameter [2:0] s052=3'b010; // State delay
+parameter [2:0] s1=3'b011; // State delay
+parameter [2:0] s2=3'b100; // Execute State 1
+parameter [2:0] s3=3'b101; // Execute State 2
 
 
 always @(*)
@@ -94,7 +91,7 @@ end
  
  
 
-initial
+initial  // Initialising control bits and next values
 begin
     //stage = 2'b00;
     next <= 2'b00;
@@ -103,46 +100,40 @@ begin
 end
 
 
-/*always @(posedge clk)
-begin
-stage = stage + 1;
-end 
-*/
-
 always @(*)
 begin
 
-    casex (opcode)
-        8'b00000100: IF[0] <= 1'b1;
-        8'b00000110: IF[0] <= 1'b1;
-        8'b00000111: IF[0] <= 1'b1;
-        8'b00001000: IF[0] <= 1'b1;
-        8'b00001001: IF[0] <= 1'b1;
-        8'b00001010: IF[0] <= 1'b1;
-        8'b00001011: IF[0] <= 1'b1;
-        8'b00001101: IF[0] <= 1'b1;
-        8'b00001110: IF[0] <= 1'b1;
-        8'b01101XXX: IF[0] <= 1'b1;
-        8'b01110XXX: IF[0] <= 1'b1;
-        8'b00010000: IF[0] <= 1'b1;
-        8'b00010001: IF[0] <= 1'b1;
-        8'b00010010: IF[0] <= 1'b1;
-        8'b00010011: IF[0] <= 1'b1;
-        8'b00010100: IF[0] <= 1'b1;
-        8'b00010101: IF[0] <= 1'b1;
-        8'b00010110: IF[0] <= 1'b1;
-        8'b10000XXX: IF[0] <= 1'b1;
+  casex (opcode)  // Setting Operand Fetch for instructions
+    8'b00000100: IF[0] <= 1'b1; // LDI
+    8'b00000110: IF[0] <= 1'b1; // RTL
+    8'b00000111: IF[0] <= 1'b1; // RTR
+    8'b00001000: IF[0] <= 1'b1; // CPI
+    8'b00001001: IF[0] <= 1'b1; // ANI
+    8'b00001010: IF[0] <= 1'b1; // ORI
+    8'b00001011: IF[0] <= 1'b1; // XRI
+    8'b00001101: IF[0] <= 1'b1; // ADI
+    8'b00001110: IF[0] <= 1'b1; // SBI
+    8'b01101XXX: IF[0] <= 1'b1; // ADIR
+    8'b01110XXX: IF[0] <= 1'b1; // SBIR
+    8'b00010000: IF[0] <= 1'b1; // JMP
+    8'b00010001: IF[0] <= 1'b1; // JNC
+    8'b00010010: IF[0] <= 1'b1; // JNZ
+    8'b00010011: IF[0] <= 1'b1; // JNS
+    8'b00010100: IF[0] <= 1'b1; // JC
+    8'b00010101: IF[0] <= 1'b1; // JZ
+    8'b00010110: IF[0] <= 1'b1; // JS
+    8'b10000XXX: IF[0] <= 1'b1; // MVI
         default: IF[0] <= 1'b0; 
     endcase
 
-    casex (opcode)
-        8'b00010XXX: E[0] <= 1'b1;
-        8'b00011000: E[0] <= 1'b1;
-        8'b01001XXX: E[0] <= 1'b1;
-        8'b01010XXX: E[0] <= 1'b1;
-        8'b01011XXX: E[0] <= 1'b1;
-        8'b011XXXXX: E[0] <= 1'b1;
-        8'b11XXXXXX: E[0] <= 1'b1;
+  casex (opcode)  // Defining instructions needing two execute cycles
+    8'b00010XXX: E[0] <= 1'b1; // Jump Instructions
+    8'b00011000: E[0] <= 1'b1; // RET
+    8'b01001XXX: E[0] <= 1'b1; // AND
+    8'b01010XXX: E[0] <= 1'b1; // OR
+    8'b01011XXX: E[0] <= 1'b1; // XOR
+    8'b011XXXXX: E[0] <= 1'b1; // CMR/ADIR/SBIR/ADD
+    8'b11XXXXXX: E[0] <= 1'b1; // Two register instructions
         default: E[0] <= 1'b0;
     endcase       
 
@@ -152,9 +143,9 @@ end
 
 always @(posedge clk)
   begin 
-    stage <= next;
+    stage <= next; // Setting Next
     
-    if(rst == 1'b1)
+    if(rst == 1'b1) // Defining hardware rese
     begin
         cb <= 0;
         E <= 0;
@@ -254,22 +245,6 @@ begin
         end
      s2: 
         begin
-        
-            /*if (opcode[7:6] == 2'b11)
-                begin
-                    r_rp = opcode[4:0];
-                    r_rn = 3'b0;
-                    w_rn = 3'b0;
-                end
-
-            else if(opcode[7:6] == 2'b10 || opcode[7:6] == 2'b01)
-                begin
-                    r_rn = opcode[2:0];
-                    w_rn = opcode[2:0];
-                    r_rp = 5'b0;
-                end
-            else   */  
-    
           E[1] <= 1'b1;
           IF[1] <= 1'b0;
         
@@ -362,102 +337,6 @@ begin
      endcase  
      
   end          
-                
-            
-                 
-                 
-           
-
-
-/*always @(*)
-begin
-
-if(IF[0] == 1 | E[0] ==1)
-begin
-temp = stage;
-while(stage<=temp+2)
-begin
-end
-IF[0] <= 2'b0;
-E[0] <= 2'b0;
-stage <= stage + 1;
-end
-
-else
-begin
-if(stage%2 == 0)
-begin
-E[1] <= 1;
-IF[1] <= 0;
-end
-
-else
-begin
-IF[1] <= 1;
-E[1] <= 0;
-end
-end
-end
-
-always @(posedge clk)
-begin
-if( IF[1] == 1)
-begin
-   cb = 25'b1000000110001000000000000;
-end
-
-if(IF[0] == 1 && IF[1] ==1)
-begin
-   cb = 25'b1000001010001000000000000;
-   IF[0] = 1'b0;
-end
-end
-*/
-
-   
-/*always @(*)   
-if(E[1] == 1)
-begin
-     case (opcode)
-     8'b00000000: cb = 0000000000000000100000000
-     8'b00000001:
-     8'b00000010:
-     8'b00000011:
-     8'b00000100:
-     8'b00000101:
-     8'b00000110:
-     8'b00000111:
-     8'b00001000:
-     8'b00001001
-     8'b00001010
-     8'b00001011
-     8'b00001100
-     8'b00001101
-     8'b00001110
-     8'b00010000
-     8'b00010001
-     8'b00010010
-     8'b00010101
-     8'b00010100
-     8'b00010101
-     8'b00010110
-     8'b00010111
-     8'b01000xxx
-     8'b01001xxx
-     8'b01010xxx
-     8'b01011xxx
-     8'b01100xxx
-     8'b01101xxx
-     8'b01110xxx
-     8'b01111xxx
-     8'b10000xxx
-     8'b10001xxx
-     8'b10010xxx
-     8'b110xxxxx
-     8'b111xxxxx 
-     */
-   
-
 endmodule
 
 
