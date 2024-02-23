@@ -43,8 +43,6 @@ reg [15:0] pc;
 initial
 begin
     pc <= 16'b0;
-    //ar_out = 16'b0;
-   // out = 16'b0;
 end       
 
 
@@ -55,6 +53,7 @@ always @(posedge clk)
 begin
 
     $monitor("%t, PC = %b", $time, pc);
+    $monitor("%t, IncPC = %b", $time, i_pc);
     //ar_out <= pc; //direct connection with address register
     
     if(rst == 1'b1)
@@ -77,11 +76,6 @@ begin
         pc <= address;
     end            
     
-/*    if(r_pc == 1'b1)
-    begin
-        out = pc;
-    end    
-    */
 end        
                    
 endmodule
