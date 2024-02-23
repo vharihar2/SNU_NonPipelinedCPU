@@ -44,12 +44,10 @@ output [15:0] to_memad;
 output  RD, wr, rd_ab, wr_s, rd_s;
 output [15:0] areg;
 output [15:0] sp;
-//output reg [7:0] rb, rc, rd ,re, rf, rg, rh, ri;
+
 
 output [7:0] rbout, rcout, rdout ,reout, rfout, rgout, rhout, riout;
 
-
-//wire [7:0] Rb, Rc, Rd ,Re, Rf, Rg, Rh, Ri;
 
 output [7:0] instruction;
      
@@ -77,25 +75,7 @@ wire [7:0] opcode;
 
 assign instruction = ir_out;   
 
-/*initial
-begin
-    databus = 8'bz;
-end  */  
 
-/*always @(*)
-begin
-*/
- 
- /*   rb = Rb;
-    rc = Rc;
-    rd = Rd;
-    re = Re;
-    rf = Rf;
-    rg = Rg; 
-    rh = Rh;
-    ri = Ri;
-    */
-    //instruction = ir_out;
     
 assign    opcode = ir_out;
 
@@ -119,6 +99,7 @@ assign    to_memad = addressbus;
 always @(*)
 begin
     $monitor("At time, %t, databus = %b" , $time, databus);
+    $monitor("At time, %t, addressbus = %b" , $time, addressbus);
 end    
 
 ControlUnit control(RD, wr, rd_ab, wr_s, rd_s,r_or, w_or,w_ir,i_pc, 
@@ -198,18 +179,9 @@ RegisterArray RA( .rst(rst),
                   .r_rp(r_rp),
                   .opcode(opcode),
                   .clk(clk),
-                        //output reg [7:0] data_out, ac_out,
                   .data_out(r_out),
                   .addr_out(rp_out),
-                  .ac_ALU(ac_ALU),
-                  /*.rb(Rb),
-                  .rc(Rc),
-                  .rd(Rd),
-                  .re(Re),
-                  .rf(Rf),
-                  .rg(Rg),
-                  .rh(Rh),
-                  .ri(Ri) */
+                 .ac_ALU(ac_ALU),
                   
                   .rb(rbout),
                   .rc(rcout),
