@@ -42,12 +42,13 @@ reg [15:0] ADR;
 initial
 begin
 ADR <= 16'b0;
-//AdReg_out = 16'b0; // Initializing
 end
 
-assign AdReg_out = ADR; 
 
-always @(*)
+assign  AdReg_out = (P_ar)? PC_in :(
+                 (A_ar)? AB_in  : ADR );
+
+always @(posedge clk)
 begin
 
     if(rst == 1'b1)
@@ -55,16 +56,8 @@ begin
         ADR <= 0;
     end    
     
-    $monitor("%t, AR = %b" , $time, ADR);
-    //AdReg_out <= ADR;
+    $monitor("%t, AR = %b" , $time, AdReg_out);
+    ADR <= AdReg_out;
     
-    if(P_ar == 1'b1) // Enabling PC input
-    begin
-        ADR <= PC_in; 
-    end
-    else if(A_ar == 1'b1) // Enabling Address Bus input
-    begin
-        ADR <= AB_in;
-    end
 end               
 endmodule
