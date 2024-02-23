@@ -66,7 +66,7 @@ begin
 end
 //** making all outputs asynchronous
 assign out_data = mem[areg];
-assign out_address = rd_ab? {mem[areg], mem[areg + 1]} : stack_mem[sp];
+assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
     
     
 always @(*)
@@ -78,7 +78,7 @@ begin
     $monitor("at time, %t, m2 = %b", $time, mem[16'b0000000000000010]);
     $monitor("at time, %t, m3 = %b", $time, mem[16'b0000000000000011]);
     $monitor("at time, %t, m4 = %b", $time, mem[16'b0000000000000100]);
-    $monitor("at time, %t, m4 = %b", $time, mem[16'b0000000010000000]);
+    $monitor("at time, %t, m1jump = %b", $time, mem[16'b0000000010000000]);
     $monitor("at time, %t, jumpmem = %b", $time, mem[16'b1000000000000000]);
     $monitor("at time, %t, STACK = %b", $time, stack_mem[1]);
     
