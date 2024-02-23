@@ -45,32 +45,22 @@ assign out_ir = ir;
 
 initial
 begin
-    //skip = 1'b1;
     ir <= 8'bz;
-   // out_ir = 8'bz;
 end
 
-always @(*)
+always @(posedge clk)
 begin
 
     if(rst == 1'b1)
     begin
         ir <= 8'b0;
     end    
-
-    /*case(skip) // trying to make IR start one clock cycle late
-    
-        1'b1: skip = 1'b0;
-        1'b0: out_ir = ir;
-        
-    endcase    */
-  //  out_ir = ir;    
+   
 end
 
 
 always @(posedge clk)
 begin
-    //out_ir <= ir; //only send data to control unit, unconitionally
     
     if(w_ir == 1'b1)
     begin 
