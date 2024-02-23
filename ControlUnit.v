@@ -258,47 +258,47 @@ begin
         
             casex(opcode)
                // 8'b11xxxxxx : cb <= {15'b0, r_rn, w_rn, r_rp, 6'b0}  ;
-                8'b11XXXXXX : cb <= setBits(6,10,10,10); 
-                //cb <= 24'b000000000000010001000000; //both two register functions
-                8'b10010XXX : cb <= setBits(5,8,8,8); 
+              8'b11XXXXXX : cb <= setBits(6,10,10,10); // both two register functions
+                //cb <= 24'b000000000000010001000000; 
+              8'b10010XXX : cb <= setBits(5,8,8,8); // MOVS
                 //cb <= 24'b000000000000000100100000;
-                8'b10001XXX : cb <= setBits(7,9,9,9);
+              8'b10001XXX : cb <= setBits(7,9,9,9); // MOVD
                 //cb <= 24'b000000000000001010000000;
-                8'b10000XXX : cb <= setBits(7,18,18,18);
+              8'b10000XXX : cb <= setBits(7,18,18,18); // MVI
                 //cb <= 24'b000001000000000010000000; 
-                8'b01000XXX : cb <= setBits(8,8,8,8); 
+              8'b01000XXX : cb <= setBits(8,8,8,8); // CPR 
+                //cb <= 24'b000000000000000100000000; 
+              8'b01001XXX : cb <= setBits(8,8,8,8); // AND
                 //cb <= 24'b000000000000000100000000;
-                8'b01001XXX : cb <= setBits(8,8,8,8);
+              8'b01010XXX : cb <= setBits(8,8,8,8); // OR 
                 //cb <= 24'b000000000000000100000000;
-                8'b01010XXX : cb <= setBits(8,8,8,8); 
+              8'b01011XXX : cb <= setBits(8,8,8,8); // XOR
                 //cb <= 24'b000000000000000100000000;
-                8'b01011XXX : cb <= setBits(8,8,8,8); 
+              8'b01100XXX : cb <= setBits(8,8,8,8); // CMR
                 //cb <= 24'b000000000000000100000000;
-                8'b01100XXX : cb <= setBits(8,8,8,8); 
+              8'b01101XXX : cb <= setBits(8,8,8,8); // ADIR
                 //cb <= 24'b000000000000000100000000;
-                8'b01101XXX : cb <= setBits(8,8,8,8); 
+              8'b01110XXX : cb <= setBits(8,8,8,8); // SBIR
                 //cb <= 24'b000000000000000100000000;
-                8'b01110XXX : cb <= setBits(8,8,8,8); 
+              8'b01111XXX : cb <= setBits(8,8,8,8); // ADD
                 //cb <= 24'b000000000000000100000000;
-                8'b01111XXX : cb <= setBits(8,8,8,8); 
-                //cb <= 24'b000000000000000100000000;
-                8'b00010XXX : cb <= setBits(20,12,12,12); 
+              8'b00010XXX : cb <= setBits(20,12,12,12); // JMP
                 //cb <= 24'b000100000001000000000000; // all jump instructions no return
-                8'b00011000 : cb <= setBits(13,19,19,19); 
+              8'b00011000 : cb <= setBits(13,19,19,19); // RET
                 //cb <= 24'b000010000010000000000000;
-                8'b00001XXX : cb <= setBits(5,5,5,5); 
+              8'b00001XXX : cb <= setBits(5,5,5,5); // CPI/ANI/ORI/XRI/CMA/ADI/SBI
                 //cb <= 24'b000000000000000000100000;
-                8'b00000111 : cb <= setBits(5,5,5,5);
+              8'b00000111 : cb <= setBits(5,5,5,5); // RTR
                 //cb <= 24'b000000000000000000100000;
-                8'b00000110 : cb <= setBits(5,5,5,5);
+              8'b00000110 : cb <= setBits(5,5,5,5); // RTL
                 //cb <= 24'b000000000000000000100000;
-                8'b00000101 : cb <= setBits(9,17,17,17);
+              8'b00000101 : cb <= setBits(9,17,17,17); // STI
                 //cb <= 24'b000000100000001000000000;
-                8'b00000100 : cb <= setBits(5,18,18,18); 
+              8'b00000100 : cb <= setBits(5,18,18,18); // LDI
                 //cb <= 24'b000001000000000000100000;
-                8'b00000011 : cb <= setBits(0,0,0,0); 
+              8'b00000011 : cb <= setBits(0,0,0,0); // CLF
                 //cb <= 24'b000000000000000000000001;
-                8'b00000000 : cb <= setBits(4,4,4,4);
+              8'b00000000 : cb <= setBits(4,4,4,4); // CLR
                 //cb <= 24'b000000000000000000010000;
            endcase     
           
@@ -319,21 +319,21 @@ begin
             
             casex (opcode)
             
-                8'b00010XXX : cb <= setBits(13,21,21,21); 
+              8'b00010XXX : cb <= setBits(13,21,21,21); // JMPS
                 //cb <= 24'b001000000010000000000000;
-                8'b00011000 : cb <= setBits(1,1,1,1);
+              8'b00011000 : cb <= setBits(1,1,1,1); // RET
                 //cb <= 24'b000000000000000000000010;
-                8'b01001XXX : cb <= setBits(7,7,7,7); 
+              8'b01001XXX : cb <= setBits(7,7,7,7); // AND
                 //cb <= 24'b000000000000000010000000;
-                8'b01010XXX : cb <= setBits(7,7,7,7);
+              8'b01010XXX : cb <= setBits(7,7,7,7); // OR
                 //cb <= 24'b000000000000000010000000;
-                8'b01011XXX : cb <= setBits(7,7,7,7); 
+              8'b01011XXX : cb <= setBits(7,7,7,7); // XOR
                 //cb <= 24'b000000000000000010000000;
-                8'b011XXXXX : cb <= setBits(7,7,7,7); 
+              8'b011XXXXX : cb <= setBits(7,7,7,7); // CMR/ADIR/SBIR/ADD
                 //cb <= 24'b000000000000000010000000;
-                8'b110XXXXX : cb <= setBits(22,9,9,9);
+              8'b110XXXXX : cb <= setBits(22,9,9,9); // STAR
                 //cb <= 24'b010000000000001000000000;
-                8'b111XXXXX : cb <= setBits(23,5,5,5);
+              8'b111XXXXX : cb <= setBits(23,5,5,5); // LDAR
                 //cb <= 24'b100000000000000000100000;
               
             endcase
