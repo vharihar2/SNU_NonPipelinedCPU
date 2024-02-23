@@ -42,8 +42,7 @@ reg [7:0] opr;
 
 initial
 begin
-   // out_or = 8'bz;
-    opr <= 8'bz;
+    opr = 8'bz;
 end
 
 assign alu_out = opr;
@@ -52,21 +51,18 @@ assign out_or = opr;
 always @(posedge clk)
 begin
     $monitor("%t, OR = %b" , $time, opr);
-    //alu_out <= opr; //unconditionally send data to ALU
+
     
     if(rst == 1'b1)
         begin
-            opr <= 0;
+            opr = 0;
         end    
 
     if(w_or == 1'b1)
     begin 
         opr <= data;
     end
-  /*  if(r_or == 1'b1)
-    begin
-        out_or <= opr;
-    end */
+
 end                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
  
 
