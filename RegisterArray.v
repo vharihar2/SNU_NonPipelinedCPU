@@ -81,7 +81,7 @@ assign ac_ALU = ac;
 assign addr_out = pair; 
 assign data_out = r_a? ac : register[reg_sel];
     
-always @(*)
+always @(posedge clk)
 begin
 
     if(rst == 1'b1)
@@ -98,18 +98,6 @@ begin
         register[7]<= 0;
         
     end    
- 
-/* 
-rb = register[0];
-rc = register[1];
-rd = register[2];
-re = register[3];
-rf = register[4];
-rg = register[5];
-rh = register[6];
-ri = register[7];
-*/
-  //  ac_ALU = ac;
 
     if (opcode[7:6] == 2'b11)
     begin
@@ -173,20 +161,6 @@ begin
         register[7]<= 0;
     end
     
- /*   if (r_a)
-    begin
-        data_out = ac;
-    end
-    if (r_rn)
-    begin
-        data_out = register[reg_sel];
-    end     
-    if (r_rp)
-    begin
-        addr_out = pair;
-    end
-    
-    */
     if (w_a)
     begin
         ac <= data_in;
@@ -207,4 +181,3 @@ assign rh = register[6];
 assign ri = register[7];
 
 endmodule
-
