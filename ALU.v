@@ -26,7 +26,9 @@
 *  8th October 2023       Aditi Sharma           default cases were added to case 
 *                                                statements                  
 *                                      
-*  22nd February 2024     Aditi Sharma           Made calculations asynchronous
+*  22nd February 2024     Aditi Sharma           Made calculations not dependent on clk
+*  
+*  29th February 2024     Aditi Sharma           Fixed 'ADD' RN + AC
 */
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -54,6 +56,7 @@ parameter [2:0] XOR = 3'b011;
 parameter [2:0] CM = 3'b100;
 parameter [2:0] ADD = 3'b101;
 parameter [2:0] SUB = 3'b110;
+parameter [2:0] ADDR = 3'b111;
 
 reg Carry, Zero, Parity, Sign;
 wire carry2;
@@ -110,10 +113,16 @@ begin
             B <= AC;
         end
         
-     else if (opcode[7:5] == 3'b011)
+     else if ((opcode[7:3] == 5'b01101) || (opcode[7:3] == 5'b01110) )
         begin
             A <= RN;
             B <= OD;
+        end
+        
+     else if (opcode[7:3] == 5'b01111)
+        begin
+            A <= RN;
+            B <= AC;
         end
         
      else
@@ -129,7 +138,7 @@ end
                        (inst == AND)? {1'b0,A & B} : (
                        (inst == OR) ? {1'b0,A | B} : (
                        (inst == XOR)? {1'b0,A ^ B} : (
-                       (inst == ADD)?  (A + B) : (
+                       ((inst == ADD) || (inst == ADDR))?  (A + B) : (
                        (inst == SUB)?  (A - B) : (
                        (opcode[7:3] == 5'b01111)? {1'b0,RN + AC} : (
                        (opcode == 8'h6)? {1'b0,AC << OD} : (
