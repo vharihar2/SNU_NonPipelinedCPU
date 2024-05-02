@@ -56,7 +56,7 @@ begin
         ADR <= 0;
     end    
     
-    $monitor("%t, AR = %b" , $time, AdReg_out);
+    //$monitor("%t, AR = %b" , $time, AdReg_out);
     ADR <= AdReg_out;
     
 end               

@@ -22,7 +22,9 @@
 *            Date                   By                          Change Notes
 * ----------------------- ---------------------- ------------------------------------------
 *    23rd October 2023           Devyam Seal                    Base Code
-*   
+*
+*    2nd April 2024              Aditi Sharma             rst shifed inside always block 
+*                                                         to prevent concurrent assignment  
 *   
 *                                                                                 
 *                                      
@@ -84,7 +86,7 @@ assign data_out = r_a? ac : register[reg_sel];
 always @(posedge clk)
 begin
 
-    if(rst == 1'b1)
+  /*  if(rst == 1'b1)
     begin
        
         ac <= 0;
@@ -97,7 +99,7 @@ begin
         register[6]<= 0;
         register[7]<= 0;
         
-    end    
+    end    */
 
     if (opcode[7:6] == 2'b11)
     begin
@@ -110,34 +112,36 @@ begin
     end   
     
     case(pair_sel)
-        00000: pair <= {register[0], register[1]};
-        00001: pair <= {register[0], register[2]};
-        00010: pair <= {register[0], register[3]};
-        00011: pair <= {register[0], register[4]};
-        00100: pair <= {register[0], register[5]};
-        00101: pair <= {register[0], register[6]};
-        00110: pair <= {register[0], register[7]};
-        00111: pair <= {register[1], register[2]};
-        01000: pair <= {register[1], register[3]};
-        01001: pair <= {register[1], register[4]};
-        01010: pair <= {register[1], register[5]};
-        01011: pair <= {register[1], register[6]};
-        01100: pair <= {register[1], register[7]};
-        01101: pair <= {register[2], register[3]};
-        01110: pair <= {register[2], register[4]};
-        01111: pair <= {register[2], register[5]};
-        10000: pair <= {register[2], register[6]};
-        10001: pair <= {register[2], register[7]};
-        10010: pair <= {register[3], register[4]};
-        10011: pair <= {register[3], register[5]};
-        10100: pair <= {register[3], register[6]};
-        10101: pair <= {register[3], register[7]};
-        10110: pair <= {register[4], register[5]};
-        10111: pair <= {register[4], register[6]};
-        11000: pair <= {register[4], register[7]};
-        11001: pair <= {register[5], register[6]};
-        11010: pair <= {register[5], register[7]};
-        11011: pair <= {register[6], register[7]};
+        5'b00000: pair <= {register[0], register[1]};
+        5'b00001: pair <= {register[0], register[2]};
+        5'b00010: pair <= {register[0], register[3]};
+        5'b00011: pair <= {register[0], register[4]};
+        5'b00100: pair <= {register[0], register[5]};
+        5'b00101: pair <= {register[0], register[6]};
+        5'b00110: pair <= {register[0], register[7]};
+        5'b00111: pair <= {register[1], register[2]};
+        5'b01000: pair <= {register[1], register[3]};
+        5'b01001: pair <= {register[1], register[4]};
+        5'b01010: pair <= {register[1], register[5]};
+        5'b01011: pair <= {register[1], register[6]};
+        5'b01100: pair <= {register[1], register[7]};
+        5'b01101: pair <= {register[2], register[3]};
+        5'b01110: pair <= {register[2], register[4]};
+        5'b01111: pair <= {register[2], register[5]};
+        5'b10000: pair <= {register[2], register[6]};
+        5'b10001: pair <= {register[2], register[7]};
+        5'b10010: pair <= {register[3], register[4]};
+        5'b10011: pair <= {register[3], register[5]};
+        5'b10100: pair <= {register[3], register[6]};
+        5'b10101: pair <= {register[3], register[7]};
+        5'b10110: pair <= {register[4], register[5]};
+        5'b10111: pair <= {register[4], register[6]};
+        5'b11000: pair <= {register[4], register[7]};
+        5'b11001: pair <= {register[5], register[6]};
+        5'b11010: pair <= {register[5], register[7]};
+        5'b11011: pair <= {register[6], register[7]};
+        
+        default : pair <= 16'b0;
     endcase
     
 end    
@@ -147,8 +151,34 @@ end
 always @(posedge clk)
 begin
 
-    $monitor("%t, accumulator = %b" , $time, ac);
-    if(wa_rn)
+    //$monitor("%t, accumulator = %b" , $time, ac);
+    if(rst == 1'b0)
+    begin
+    
+        if(wa_rn)
+        begin
+            ac <= 0;
+            register[0]<= 0;
+            register[1]<= 0;
+            register[2]<= 0;
+            register[3]<= 0;
+            register[4]<= 0;
+            register[5]<= 0;
+            register[6]<= 0;
+            register[7]<= 0;
+         end
+    
+        if (w_a)
+        begin
+            ac <= data_in;
+        end
+        if (w_rn)
+        begin
+            register[reg_sel] <= data_in;
+        end
+    end   
+    
+    else if(rst == 1'b1)
     begin
         ac <= 0;
         register[0]<= 0;
@@ -159,25 +189,16 @@ begin
         register[5]<= 0;
         register[6]<= 0;
         register[7]<= 0;
-    end
-    
-    if (w_a)
-    begin
-        ac <= data_in;
-    end
-    if (w_rn)
-    begin
-        register[reg_sel] <= data_in;
-    end
-end   
+    end    
+end    
 
-assign rb = register[0];
-assign rc = register[1];
-assign rd = register[2];
-assign re = register[3];
-assign rf = register[4];
-assign rg = register[5];
-assign rh = register[6];
-assign ri = register[7];
+        assign rb = register[0];
+        assign rc = register[1];
+        assign rd = register[2];
+        assign re = register[3];
+        assign rf = register[4];
+        assign rg = register[5];
+        assign rh = register[6];
+        assign ri = register[7];      
 
 endmodule

@@ -22,6 +22,9 @@
 *            Date                  By                          Change Notes
 * ----------------------- ---------------------- ------------------------------------------
 *   23rd October 2023            Aditi Sharma                      Base Code
+*
+*   2nd April 2024               Aditi Sharma             rst shifed inside always block 
+*                                                         to prevent concurrent assignment
 *   
 *   
 *                                                                                
@@ -48,7 +51,7 @@ begin
     ir <= 8'bz;
 end
 
-always @(posedge clk)
+/*always @(posedge clk)
 begin
 
     if(rst == 1'b1)
@@ -56,18 +59,22 @@ begin
         ir <= 8'b0;
     end    
    
-end
+end*/
 
 
 always @(posedge clk)
 begin
     
-    if(w_ir == 1'b1)
+    if(w_ir == 1'b1 & rst == 1'b0)
     begin 
         ir <= data;
     end
+    else if(rst == 1'b1)
+    begin
+        ir <= 8'b0;
+    end    
     
-    $monitor("%t, IR = %b", $time, ir);
+    //$monitor("%t, IR = %b", $time, ir);
 end        
  
 endmodule
