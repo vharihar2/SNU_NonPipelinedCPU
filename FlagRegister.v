@@ -50,7 +50,7 @@ assign cu_out = FlagArray;
 
 always @(*)
 begin
-
+    
     if(rst == 1'b1)
     begin
         FlagArray <= 0;
@@ -68,7 +68,6 @@ begin
     FlagArray[1] <= ALU_in[1];
     FlagArray[2] <= ALU_in[2];
     FlagArray[3] <= ALU_in[3];
-
-   // cu_out <= FlagArray;  // Sending flags to control unit
+   
 end
 endmodule

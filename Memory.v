@@ -44,45 +44,22 @@ module Memory(
              input clk 
              );
              
-reg [7:0] mem[59999:0];
-reg [15:0] stack_mem[3999:0];
-integer i;
+reg [7:0] mem[60000:0];
 
+reg [15:0] stack_mem [4000:0];
 
-initial
-begin
-    for(i = 0 ; i<= 59999; i = i+1)
-    begin
-      mem[i] <= 8'b0;
-    end
-    
-    for( i = 0; i<=3999; i = i+1)
-    begin
-      stack_mem[i] <= 16'b0;
-    end    
-
- //   out_data = 8'b0;
- //   out_address = 16'b0;   
-end
 //** making all outputs asynchronous
 assign out_data = mem[areg];
 assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
+
+//assign out_data = tempdat[0];
+//assign out_address = rd_ab? {tempdat[1], tempdat[2]} : tempad[0];
     
-    
+       
 always @(*)
 begin
     
-    mem[TestAd] = TestDat;
-    $monitor("at time, %t, m0 = %b", $time, mem[0]);
-    $monitor("at time, %t, m1 = %b", $time, mem[16'b0000000000000001]);
-    $monitor("at time, %t, m2 = %b", $time, mem[16'b0000000000000010]);
-    $monitor("at time, %t, m3 = %b", $time, mem[16'b0000000000000011]);
-    $monitor("at time, %t, m4 = %b", $time, mem[16'b0000000000000100]);
-    $monitor("at time, %t, m1jump = %b", $time, mem[16'b0000000010000000]);
-    $monitor("at time, %t, jumpmem = %b", $time, mem[16'b1000000000000000]);
-    $monitor("at time, %t, STACK = %b", $time, stack_mem[1]);
-    
-
+    mem[TestAd] <= TestDat;
     
     if(wr == 1)
     begin
@@ -94,12 +71,16 @@ begin
     begin
         stack_mem[sp] <= address;
     end 
+   
+            
+    
+  
+    //tempdat[0] <= mem[areg];
+    //tempdat[1] <= mem[areg + 1];
+    //tempdat[2] <= mem[areg + 2];
+    //tempad [0] <= stack_mem[sp];
     
     
 end 
-
-// add program to memory for execution. 
-
-// * Probably something wrong with how TestAd and TestDat is happening. 
  
 endmodule

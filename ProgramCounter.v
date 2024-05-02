@@ -52,8 +52,8 @@ assign out = pc;
 always @(posedge clk)
 begin
 
-    $monitor("%t, PC = %b", $time, pc);
-    $monitor("%t, IncPC = %b", $time, i_pc);
+   // $monitor("%t, PC = %b", $time, pc);
+   // $monitor("%t, IncPC = %b", $time, i_pc);
     //ar_out <= pc; //direct connection with address register
     
     if(rst == 1'b1)

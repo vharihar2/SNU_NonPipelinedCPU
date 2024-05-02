@@ -26,9 +26,7 @@
 *  8th October 2023       Aditi Sharma           default cases were added to case 
 *                                                statements                  
 *                                      
-*  22nd February 2024     Aditi Sharma           Made calculations not dependent on clk
-*  
-*  29th February 2024     Aditi Sharma           Fixed 'ADD' RN + AC
+*  22nd February 2024     Aditi Sharma           Made calculations asynchronous
 */
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -41,46 +39,51 @@ module ALU(
     input [7:0] RN,
     input [7:0] OD,
     input [7:0] AC,
-    input [7:0] opcode
+    input [7:0] opcode,
+    input [2:0] stage
 );
 
 reg [7:0] A, B;
-reg [2:0] inst;  
+reg [3:0] inst;  
         
         
 
-parameter [2:0] CP = 3'b000;
-parameter [2:0] AND = 3'b001;
-parameter [2:0] OR = 3'b010;
-parameter [2:0] XOR = 3'b011;
-parameter [2:0] CM = 3'b100;
-parameter [2:0] ADD = 3'b101;
-parameter [2:0] SUB = 3'b110;
-parameter [2:0] ADDR = 3'b111;
+parameter [3:0] CP = 4'b0000;
+parameter [3:0] AND = 4'b0001;
+parameter [3:0] OR = 4'b0010;
+parameter [3:0] XOR = 4'b0011;
+parameter [3:0] CM = 4'b0100;
+parameter [3:0] ADD = 4'b0101;
+parameter [3:0] SUB = 4'b0110;
+parameter [3:0] ADDR = 4'b0111;
+parameter [3:0] SUBR = 4'b1001;
 
-reg Carry, Zero, Parity, Sign;
+reg Carry, Zero, Parity, Sign; 
 wire carry2;
+wire [7:0] outFF;
 
 initial
 begin
-    Carry <=0;
-    Zero <= 0;
-    Parity <= 0;
-    Sign <= 0;
+    Carry <= 1'b0;
+    Zero <= 1'b0;
+    Parity <= 1'b0;
+    Sign <= 1'b0;
     //Out <= 0;
 end
 
+assign outFF = (stage == 3'b000)? Out : outFF;
 
 always @(posedge clk)
 begin
 
-    $monitor("%t, ALU RN in = is %b" , $time, RN);
+    /*$monitor("%t, ALU RN in = is %b" , $time, RN);
     $monitor("%t, ALU OD in = is %b" , $time, OD);
     $monitor("%t, ALU out = is %b" , $time, Out);
     $monitor("%t, carry = is %b" , $time, carry2);
     $monitor("%t, inst = is %b" , $time, inst);
     $monitor("%t, A = is %b" , $time, A);
-    $monitor("%t, B = is %b" , $time, B);
+    $monitor("%t, B = is %b" , $time, B);*/
+   
     
     
     Sign <= 1'b0;
@@ -93,7 +96,11 @@ begin
     else if(opcode[7:6] == 2'b01)
         begin
             inst <= opcode[5:3]; 
-        end
+        end 
+    else if(opcode[7:3] == 5'b10011)
+        begin
+            inst <= opcode[7:4];
+        end           
         
     else
         begin
@@ -119,37 +126,20 @@ begin
             B <= OD;
         end
         
-     else if (opcode[7:3] == 5'b01111)
+     else if ((opcode[7:3] == 5'b01111) || (opcode[7:3] == 5'b10011))
         begin
             A <= RN;
             B <= AC;
         end
-        
+                  
      else
         begin
             A <= 8'b0;
             B <= 8'b0;
         end
-end
-
-    
-
- assign {carry2,Out}=  (inst == CM) ? {1'b0,~A} : (
-                       (inst == AND)? {1'b0,A & B} : (
-                       (inst == OR) ? {1'b0,A | B} : (
-                       (inst == XOR)? {1'b0,A ^ B} : (
-                       ((inst == ADD) || (inst == ADDR))?  (A + B) : (
-                       (inst == SUB)?  (A - B) : (
-                       (opcode[7:3] == 5'b01111)? {1'b0,RN + AC} : (
-                       (opcode == 8'h6)? {1'b0,AC << OD} : (
-                       (opcode == 8'h7)? {1'b0,AC >> OD} : {1'b0,8'b0} ))))))));
-                                              
-                       
-                        
- 
-    always @(posedge clk)
-    begin
-        case (inst)
+        
+        
+     case (inst)
         
         CP:
             begin
@@ -169,13 +159,25 @@ end
                         Carry <= 1'b0;
                     end
             end
+            
+      default :   $monitor("%t, ALU outFF = is %b" , $time, outFF);
     endcase
 
-    Parity <= ^Out;
-    Zero <= ~(|Out);
+    Parity <= ^outFF;
+    Zero <= ~(|outFF);
     
+end       
 
-end
+ assign {carry2,Out}=  (inst == CM) ? {1'b0,~A} : (
+                       (inst == AND)? {1'b0,A & B} : (
+                       (inst == OR) ? {1'b0,A | B} : (
+                       (inst == XOR)? {1'b0,A ^ B} : (
+                       ((inst == ADD) || (inst == ADDR))?  (A + B) : (
+                       ((inst == SUB) || (inst == SUBR))?  (A - B) : (
+                       (opcode[7:3] == 5'b01111)? {1'b0,RN + AC} : (
+                       (opcode == 8'b00000110)? {1'b0,AC << OD} : (
+                       (opcode == 8'b00000111)? {1'b0,AC >> OD} : {1'b0,Out} ))))))));
+                                              
 
 assign Flag = {(Carry||carry2), Zero, Sign, Parity};
 

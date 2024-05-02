@@ -44,16 +44,20 @@ output [15:0] to_memad;
 output  RD, wr, rd_ab, wr_s, rd_s;
 output [15:0] areg;
 output [15:0] sp;
-
+//output reg [7:0] rb, rc, rd ,re, rf, rg, rh, ri;
 
 output [7:0] rbout, rcout, rdout ,reout, rfout, rgout, rhout, riout;
 
+
+//wire [7:0] Rb, Rc, Rd ,Re, Rf, Rg, Rh, Ri;
 
 output [7:0] instruction;
      
 //control signals
 wire r_or, w_or,w_ir,i_pc,i2_pc, w_pc, r_pc,p_ar, a_ar,r_a, 
-     r_rn, w_rn, r_rp,w_a, wa_rn, r_sp, i_sp, d_sp, cl_fr, E, IF;
+     r_rn, w_rn, r_rp,w_a, wa_rn, r_sp, i_sp, d_sp, cl_fr;
+     
+wire [1:0] E, IF;
      
 // busses     
 wire [7:0] databus;
@@ -64,18 +68,37 @@ wire [7:0] from_memdata, r_out, or_out, alu_out;
 wire [15:0] rp_out, pc_out, from_memad; 
 
 //wire connections
-wire [3:0] Flags;
+wire [3:0] flags;
 wire [7:0] or_ALU;
 wire [7:0] ac_ALU;
 wire [7:0] ir_out;
 wire [15:0] pc_ar;
 wire [3:0] flag_cu;
 wire [7:0] opcode;
+wire [2:0] stage;
 
 
 assign instruction = ir_out;   
 
+/*initial
+begin
+    databus = 8'bz;
+end  */  
 
+/*always @(*)
+begin
+*/
+ 
+ /*   rb = Rb;
+    rc = Rc;
+    rd = Rd;
+    re = Re;
+    rf = Rf;
+    rg = Rg; 
+    rh = Rh;
+    ri = Ri;
+    */
+    //instruction = ir_out;
     
 assign    opcode = ir_out;
 
@@ -104,16 +127,17 @@ end
 
 ControlUnit control(RD, wr, rd_ab, wr_s, rd_s,r_or, w_or,w_ir,i_pc, 
                     i2_pc, w_pc, r_pc,p_ar, a_ar,r_a, r_rn, w_rn, r_rp, 
-                    w_a, wa_rn, r_sp, i_sp, d_sp, cl_fr, E, IF, clk, opcode, rst);
+                    w_a, wa_rn, r_sp, i_sp, d_sp, cl_fr, E, IF, clk, opcode, rst, flags, stage);
                     
 ALU Alu(
          .clk(clk),
          .Out(alu_out),
-         .Flag(Flags),
+         .Flag(flags),
          .RN(databus),
          .OD(or_ALU),
          .AC(ac_ALU),
-         .opcode(opcode)
+         .opcode(opcode),
+         .stage(stage)
         ); 
         
 OperandRegister  OpR( .clk(clk),
@@ -135,7 +159,7 @@ AddressRegister AR( .clk(clk),
                   );
                                    
 FlagRegister FR( .rst(rst),
-                 .ALU_in(Flags),
+                 .ALU_in(flags),
                  .CL_f(cl_fr),
                  .cu_out(flag_cu)
                  
@@ -164,7 +188,7 @@ ProgramCounter PC( .rst(rst),
 StackPointer SP( .clk(clk),
                  .rst(rst),
                  .I_sp(i_sp),
-                 .D_sp(d_Sp),
+                 .D_sp(d_sp),
                  .Mem_out(sp)  
                  
                );
@@ -179,9 +203,18 @@ RegisterArray RA( .rst(rst),
                   .r_rp(r_rp),
                   .opcode(opcode),
                   .clk(clk),
+                        //output reg [7:0] data_out, ac_out,
                   .data_out(r_out),
                   .addr_out(rp_out),
-                 .ac_ALU(ac_ALU),
+                  .ac_ALU(ac_ALU),
+                  /*.rb(Rb),
+                  .rc(Rc),
+                  .rd(Rd),
+                  .re(Re),
+                  .rf(Rf),
+                  .rg(Rg),
+                  .rh(Rh),
+                  .ri(Ri) */
                   
                   .rb(rbout),
                   .rc(rcout),

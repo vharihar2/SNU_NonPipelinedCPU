@@ -39,29 +39,35 @@ module OperandRegister( input clk,
                         output [7:0] alu_out);
                         
 reg [7:0] opr;
+wire [7:0] opreg;
+
+assign opreg = (w_or)? data : opr;
+
+assign alu_out = opreg;
+
+assign out_or = opreg;
 
 initial
 begin
-    opr = 8'bz;
+    opr <= 8'bz;
 end
-
-assign alu_out = opr;
-assign out_or = opr;
 
 always @(posedge clk)
 begin
-    $monitor("%t, OR = %b" , $time, opr);
+    //$monitor("%t, OR = %b" , $time, opreg);
 
     
     if(rst == 1'b1)
         begin
-            opr = 0;
+            opr <= 0;
         end    
 
-    if(w_or == 1'b1)
+    /*if(w_or == 1'b1)
     begin 
         opr <= data;
-    end
+    end */
+    
+    opr <= opreg;
 
 end                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
  
