@@ -32,8 +32,9 @@
 
 
 module Memory(
-             output [7:0] out_data,
-             output [15:0] out_address,
+             input clkvga,
+             output reg [7:0] out_data,
+             output reg [15:0] out_address,
              input [7:0] data,
              input [15:0] address,
              input rd, wr, rd_ab, wr_s, rd_s,
@@ -41,44 +42,90 @@ module Memory(
              input [15:0] sp,
              input [15:0] TestAd,
              input [7:0] TestDat,
-             input clk 
+             input clk
              );
              
-reg [7:0] mem[60000:0];
+(* rom_style = "block" *) reg [7:0] mem[60000:0];
+(* rom_style = "block" *) reg [15:0] stack_mem [4000:0];
 
-reg [15:0] stack_mem [4000:0];
+reg [7:0] program[1000:0];
+
+
+//reg inputs;
+
+/*initial
+begin
+    inputs = 1'b1;
+end    
+
+reg [15:0] tempad;
+reg [7:0] tempdata; */
+   
+
+//reg [7:0] tempdat[2:0];
+//reg [15:0] tempad;
 
 //** making all outputs asynchronous
-assign out_data = mem[areg];
-assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
+//assign out_data = mem[areg];
+//assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
 
 //assign out_data = tempdat[0];
-//assign out_address = rd_ab? {tempdat[1], tempdat[2]} : tempad[0];
-    
-       
-always @(*)
+//assign out_address = rd_ab? {tempdat[1], tempdat[2]} : tempad[0];   
+
+/*always @(TestDat or TestAd)
 begin
+        wr = 1'b0;
+        areg = TestAd;
+        data = TestDat;
+        wr = 1'b1;
+end    */              
+              
+always @(posedge clkvga)
+begin
+                   
+        
+    program[TestAd] <= TestDat;
     
-    mem[TestAd] <= TestDat;
-    
-    if(wr == 1)
+    if(wr == 1'b1)
     begin
-        mem[areg] <= data ;
+    
+        if(areg > TestAd)
+        begin
+            mem[areg] <= data;
+        end 
+        else
+        begin   
+            program[areg] <= data ;
+        end
+        
     end 
     
     
     if(wr_s == 1)
     begin
         stack_mem[sp] <= address;
-    end 
-   
-            
+    end   
     
-  
+    if(areg > TestAd)
+    begin
+        out_data <= mem[areg];
+    end    
+    else
+        out_data <= program[areg]; 
+     
+    
+    if(rd_ab == 1'b1)
+    begin
+        out_address <= {program[areg+1], program[areg + 2]};
+    end      
+    else
+        out_address <= stack_mem[sp];     
+    
+    
     //tempdat[0] <= mem[areg];
     //tempdat[1] <= mem[areg + 1];
     //tempdat[2] <= mem[areg + 2];
-    //tempad [0] <= stack_mem[sp];
+    //tempad <= stack_mem[sp];
     
     
 end 

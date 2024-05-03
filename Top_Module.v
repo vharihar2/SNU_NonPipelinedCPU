@@ -31,9 +31,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Top_Module(clk, rst, TestDat, TestAd, rbf, rcf, rdf ,ref, rff, rgf, rhf, rif, instructionout );
+module Top_Module(clkvga, clk, rst, TestDat, TestAd, rbf, rcf, rdf ,ref, rff, rgf, rhf, rif, instructionout );
 
-input clk, rst;
+input clkvga, clk, rst;
 input  [7:0] TestDat;
 input  [15:0] TestAd;
 output [7:0] rbf, rcf, rdf ,ref, rff, rgf, rhf, rif, instructionout;
@@ -70,7 +70,8 @@ MidModule  MM(
                .rst(rst)
                 );
                  
-Memory Mem(.out_data(from_memdata),
+Memory Mem(.clkvga(clkvga),
+           .out_data(from_memdata),
            .out_address(from_memad),
            .data(to_memdata),
            .address(to_memad),
