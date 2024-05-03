@@ -44,26 +44,12 @@ module Memory(
              input clk 
              );
              
-reg [7:0] mem[59999:0];
-reg [15:0] stack_mem[3999:0];
-integer i;
-
-
-initial
-begin
-    for(i = 0 ; i<= 59999; i = i+1)
-    begin
-      mem[i] <= 8'b0;
-    end
-    
-    for( i = 0; i<=3999; i = i+1)
-    begin
-      stack_mem[i] <= 16'b0;
-    end    
+  reg [7:0] mem[600:0];
+  reg [15:0] stack_mem[40:0];
+   
 
  //   out_data = 8'b0;
  //   out_address = 16'b0;   
-end
 //** making all outputs asynchronous
 assign out_data = mem[areg];
 assign out_address = rd_ab? {mem[areg+1], mem[areg + 2]} : stack_mem[sp];
