@@ -67,7 +67,7 @@ module ascii_test(
     //Top_Module topmicro( .OP(OP),.R1(R1), .R2(R2),.R3(R3),.R4(R4),.R5(R5),.R6(R6),.R7(R7),.R8(R8),.PC(PC), .clk(clk), .entera(entera), .enterd(enterd), .clk2(clk2));
     
     //Top_Module topm(.clk(clk), .rst(rst), .TestDat(TestDat), .TestAd(TestAd), .rbf(R1), .rcf(R2), .rdf(R3) ,.ref(R4), .rff(R5), .rgf(R6), .rhf(R7), .rif(R8), .instructionout(instructionout) );
-     Top_Module topm(.clkvga(clkvga), .clk(clk), .rst(rst), .TestDat(TestDat), .TestAd(TestAd), .rbf(R1), .rcf(R2), .rdf(R3) ,.ref(R4), .rff(R5), .rgf(R6), .rhf(R7), .rif(R8), .instructionout(instructionout) );
+     Top_Module topm(.clk(clk), .rst(rst), .TestDat(TestDat), .TestAd(TestAd), .rbf(R1), .rcf(R2), .rdf(R3) ,.ref(R4), .rff(R5), .rgf(R6), .rhf(R7), .rif(R8), .instructionout(instructionout) );
     // instantiate ASCII ROM
     ascii_rom rom(.clkvga(clkvga), .addr(rom_addr), .data(rom_data));
       
