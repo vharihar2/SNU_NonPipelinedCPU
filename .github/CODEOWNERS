@@ -7,5 +7,5 @@
 #Uncomment the below line to give write access to all files in this repository to @CasperWhite13 and @NeroKode
 #/* @vharihar2 @CasperWhite13 @NeroKode   #All code co-owned by Aditi/Devyam and me
 
-#Uncomment the below line to give write access on all files in .github subdir toonly myself
+#Uncomment the below line to give write access on all files in .github subdir to only myself
 #/.github/ @vharihar2      #Except the CODEOWNERS file itself (and anything else in .github) on which I alone have control
